@@ -12,8 +12,10 @@ public class atesetme : MonoBehaviour
     karakter_hareket hpkontrol;
     Animator anim;
     float firlatma_hizi;
-    //public GameObject arrowObject;
-    //public Transform arrowPoint;
+    public GameObject arrowObject;
+    public Transform arrowPoint;
+    public float arrowSpeed = 20f;
+    
 
 
 
@@ -52,9 +54,15 @@ public class atesetme : MonoBehaviour
         Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
 
+        Vector3 mouseScreenPosition = Input.mousePosition;
+        Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mouseScreenPosition.x, mouseScreenPosition.y, 10f));
 
-        //GameObject arrow = Instantiate(arrowObject, arrowPoint.position, transform.rotation);
-        //arrow.GetComponent<Rigidbody>().AddForce(transform.forward * 20f, ForceMode.Impulse);
+        GameObject arrow = Instantiate(arrowObject, arrowPoint.position, Quaternion.identity);
+        Vector3 direction = (mouseWorldPosition - arrowPoint.position).normalized;
+        Quaternion rotation = Quaternion.Euler(90f, 0f, 0f); // 90 derece x ekseni rotasyonu
+        arrow.transform.rotation = rotation;
+        arrow.GetComponent<Rigidbody>().AddForce(direction * arrowSpeed, ForceMode.Impulse);
+
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, wolfkatman))
         {
             hit.collider.gameObject.GetComponent<Spider>().HasarAL();
